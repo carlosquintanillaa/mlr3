@@ -32,7 +32,7 @@ instance = ti(
 tuner = tnr("grid_search")
 tuner$optimize(instance)
 
-as.data.table(instance$archive)
+as.data.table(instance$archive)[order(regr.rmse),c(1,2)]
 
 # Extract optimal parameters
 
