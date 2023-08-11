@@ -3,7 +3,7 @@ library(mlr3verse)
 
 task = as_task_regr(diamonds, target = "price", id = "diamonds")
 
-set.seed(1234)
+set.seed(12345)
 
 splits = partition(task,ratio=0.8, stratify = TRUE)
 
@@ -17,8 +17,8 @@ measure = msr("regr.rmse")
 
 # Create a graph
 
-learner = lrn("regr.kknn",k=to_tune(c(1,5,10,30)))
-graph =  po("scale") %>>% po("encode") %>>% learner
+learner = lrn("regr.rpart",maxdepth=to_tune(c(3,5,10,20)))
+graph =   learner
 pipeline = GraphLearner$new(graph)
 
 instance = ti(
@@ -32,7 +32,7 @@ instance = ti(
 tuner = tnr("grid_search")
 tuner$optimize(instance)
 
-as.data.table(instance$archive)
+as.data.table(instance$archive)[order(regr.rmse),c(1,2)]
 
 # Extract optimal parameters
 
